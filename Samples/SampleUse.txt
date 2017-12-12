@@ -1,0 +1,23 @@
+HOW TO USE THE SAMPLES:
+
+Two gray polygons will appear onscreen.
+Each polygon is surrounded by a bounding rectangle.
+
+The third (red) polygon appears when there is a collision, and is the suggested resolution based on the minimum translation vector.
+
+Background Colors:
+White			=> No Collision.
+Light Yellow	=> Bounds Collide, objects do not.
+Green			=> Bounds and Objects collide.
+
+[Z] to switch bounding mode to bounding boxes.
+[X] to switch bounding mode to bounding squares.
+
+Left Click to position first object.
+Right Click to position second object.
+
+[QW] to rotate first object.
+[ER] to scale first object.
+
+[AS] to rotate second object.
+[DF] to scale second object.

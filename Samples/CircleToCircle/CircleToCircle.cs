@@ -1,135 +1,129 @@
-﻿using Microsoft.Xna.Framework;
+﻿#region using
+
+using System;
+using System.Drawing;
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SeparatingAxisCollision;
-using RectangleF = System.Drawing.RectangleF;
+using Color = Microsoft.Xna.Framework.Color;
 
-namespace CircleToCircle
-{
-    public class CircleToCircle : Game
-    {
-        GraphicsDeviceManager graphics;
-        SpriteBatch spriteBatch;
+#endregion
 
-        Texture2D WhitePixel;
+namespace CircleToCircle {
+    public class CircleToCircle : Game {
+        private Boolean _broadColliding;
 
-        DrawableCircle Circle;
-        DrawableCircle OtherCircle;
-        DrawableCircle MTVCircle;
+        private DrawableCircle _circle;
 
-        RectangleF CircleBounds;
-        RectangleF OtherCircleBounds;
+        private RectangleF _circleBounds;
+        private Boolean _colliding;
+        private Vector2 _mtv = Vector2.Zero;
+        private DrawableCircle _mtvCircle;
+        private DrawableCircle _otherCircle;
+        private RectangleF _otherCircleBounds;
+        private SpriteBatch _spriteBatch;
 
-        bool usingBoundingBoxes = true;
-        bool broadColliding = false;
-        bool colliding = false;
-        Vector2 mtv = Vector2.Zero;
+        private Boolean _usingBoundingBoxes = true;
 
-        public CircleToCircle()
-        {
-            graphics = new GraphicsDeviceManager(this);
+        private Texture2D _whitePixel;
+
+        public CircleToCircle() {
+            new GraphicsDeviceManager(this);
             IsMouseVisible = true;
         }
 
-        protected override void Initialize()
-        {
-            Circle = new DrawableCircle(25, new Vector2(0, 0), pos: new Vector2(150, 150));
-            OtherCircle = new DrawableCircle(30, new Vector2(15, 0), pos: new Vector2(450, 150));
-            MTVCircle = new DrawableCircle(25, new Vector2(0, 0), pos: new Vector2(150, 150));
+        protected override void Initialize() {
+            _circle = new DrawableCircle(25, new Vector2(0, 0), pos: new Vector2(150, 150));
+            _otherCircle = new DrawableCircle(30, new Vector2(15, 0), pos: new Vector2(450, 150));
+            _mtvCircle = new DrawableCircle(25, new Vector2(0, 0), pos: new Vector2(150, 150));
             base.Initialize();
         }
 
-        protected override void LoadContent()
-        {
-            spriteBatch = new SpriteBatch(GraphicsDevice);
-            WhitePixel = Utils.GeneratePixel(GraphicsDevice);
+        protected override void LoadContent() {
+            _spriteBatch = new SpriteBatch(GraphicsDevice);
+            _whitePixel = Utils.GeneratePixel(GraphicsDevice);
         }
 
-        protected override void Update(GameTime gameTime)
-        {
-            var mState = Mouse.GetState();
-            var kState = Keyboard.GetState();
+        protected override void Update(GameTime gameTime) {
+            MouseState mState = Mouse.GetState();
+            KeyboardState kState = Keyboard.GetState();
 
             if (kState.IsKeyDown(Keys.Z))
-                usingBoundingBoxes = true;
+                _usingBoundingBoxes = true;
             else if (kState.IsKeyDown(Keys.X))
-                usingBoundingBoxes = false;
+                _usingBoundingBoxes = false;
 
             if (mState.LeftButton == ButtonState.Pressed)
-                Circle.Position = mState.Position.ToVector2();
+                _circle.Position = mState.Position.ToVector2();
             else if (mState.RightButton == ButtonState.Pressed)
-                OtherCircle.Position = mState.Position.ToVector2();
+                _otherCircle.Position = mState.Position.ToVector2();
 
             if (kState.IsKeyDown(Keys.Q))
-                Circle.Rotation += (float)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _circle.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.W))
-                Circle.Rotation += -(float)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _circle.Rotation += -(Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.A))
-                OtherCircle.Rotation += (float)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _otherCircle.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.S))
-                OtherCircle.Rotation += -(float)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _otherCircle.Rotation += -(Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.E))
-                Circle.Scale += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _circle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             else if (kState.IsKeyDown(Keys.R))
-                Circle.Scale += -(float)gameTime.ElapsedGameTime.TotalSeconds;
+                _circle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (kState.IsKeyDown(Keys.D))
-                OtherCircle.Scale += (float)gameTime.ElapsedGameTime.TotalSeconds;
+                _otherCircle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             else if (kState.IsKeyDown(Keys.F))
-                OtherCircle.Scale += -(float)gameTime.ElapsedGameTime.TotalSeconds;
+                _otherCircle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
 
-            broadColliding = false;
-            colliding = false;
+            _broadColliding = false;
+            _colliding = false;
 
-            if (usingBoundingBoxes)
-            {
-                CircleBounds = Circle.GetBoundingBox();
-                OtherCircleBounds = OtherCircle.GetBoundingBox();
-            }
-            else
-            {
-                CircleBounds = Circle.GetBoundingSquare();
-                OtherCircleBounds = OtherCircle.GetBoundingSquare();
-            }
-            
-            if (CircleBounds.CollidesWith(OtherCircleBounds))
-                broadColliding = true;
-
-            if ((mtv = Circle.CheckCollisionAndRespond(OtherCircle)) != Vector2.Zero)
-            {
-                colliding = true;
-                MTVCircle.Position = Circle.Position + mtv;
-                MTVCircle.Rotation = Circle.Rotation;
-                MTVCircle.Scale = Circle.Scale;
+            if (_usingBoundingBoxes) {
+                _circleBounds = _circle.GetBoundingBox();
+                _otherCircleBounds = _otherCircle.GetBoundingBox();
+            } else {
+                _circleBounds = _circle.GetBoundingSquare();
+                _otherCircleBounds = _otherCircle.GetBoundingSquare();
             }
 
-            if (colliding && !broadColliding)
-                throw new System.Exception("Broadphase did not collide when SAT did!");
+            if (_circleBounds.CollidesWith(_otherCircleBounds))
+                _broadColliding = true;
+
+            if ((_mtv = _circle.CheckCollisionAndRespond(_otherCircle)) != Vector2.Zero) {
+                _colliding = true;
+                _mtvCircle.Position = _circle.Position + _mtv;
+                _mtvCircle.Rotation = _circle.Rotation;
+                _mtvCircle.Scale = _circle.Scale;
+            }
+
+            if (_colliding && !_broadColliding)
+                throw new Exception("Broadphase did not collide when SAT did!");
 
             base.Update(gameTime);
         }
 
-        protected override void Draw(GameTime gameTime)
-        {
-            if (colliding)
+        protected override void Draw(GameTime gameTime) {
+            if (_colliding)
                 GraphicsDevice.Clear(Color.LightGreen);
-            else if (broadColliding)
+            else if (_broadColliding)
                 GraphicsDevice.Clear(Color.LightYellow);
             else
                 GraphicsDevice.Clear(Color.White);
 
-            spriteBatch.Begin();
-            Circle.Draw(GraphicsDevice, spriteBatch);
-            OtherCircle.Draw(GraphicsDevice, spriteBatch);
+            _spriteBatch.Begin();
+            _circle.Draw(GraphicsDevice, _spriteBatch);
+            _otherCircle.Draw(GraphicsDevice, _spriteBatch);
 
-            CircleBounds.Draw(WhitePixel, spriteBatch, Color.DarkSlateGray);
-            OtherCircleBounds.Draw(WhitePixel, spriteBatch, Color.DarkSlateGray);
+            _circleBounds.Draw(_whitePixel, _spriteBatch, Color.DarkSlateGray);
+            _otherCircleBounds.Draw(_whitePixel, _spriteBatch, Color.DarkSlateGray);
 
-            if (colliding)
-                MTVCircle.Draw(GraphicsDevice, spriteBatch, Color.Red);
-            spriteBatch.End();
+            if (_colliding)
+                _mtvCircle.Draw(GraphicsDevice, _spriteBatch, Color.Red);
+            _spriteBatch.End();
             base.Draw(gameTime);
         }
     }

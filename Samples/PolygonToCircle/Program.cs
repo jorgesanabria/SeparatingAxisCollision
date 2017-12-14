@@ -1,18 +1,13 @@
-﻿namespace PolygonToCircle
-{
-    public static class Program
-    {
+﻿namespace PolygonToCircle {
+    public static class Program {
         public static PolygonToCircle Core;
 
-        static void Main()
-        {
-            try
-            {
+        private static void Main() {
+            try {
                 Core = new PolygonToCircle();
                 Core.Run();
             }
-            finally
-            {
+            finally {
                 Core.Dispose();
             }
         }

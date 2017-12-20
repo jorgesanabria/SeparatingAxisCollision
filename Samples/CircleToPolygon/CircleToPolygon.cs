@@ -6,7 +6,9 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SeparatingAxisCollision;
+using SeparatingAxisCollision.polygons;
 using Color = Microsoft.Xna.Framework.Color;
+using FreeConvex = SeparatingAxisCollision.polygons.FreeConvex;
 
 #endregion
 
@@ -21,7 +23,7 @@ namespace CircleToPolygon {
         private Vector2 _mtv = Vector2.Zero;
         private DrawableCircle _mtvCircle;
         private SpriteBatch _spriteBatch;
-        private Polygon _triangle;
+        private FreeConvex _triangle;
         private RectangleF _triangleBounds;
 
         private Boolean _usingBoundingBoxes = true;
@@ -35,7 +37,7 @@ namespace CircleToPolygon {
 
         protected override void Initialize() {
             _circle = new DrawableCircle(50, new Vector2(0, 0), pos: new Vector2(150, 150));
-            _triangle = new Polygon(new Shape(new Vector2(50, 50), new Vector2(-50, 50), new Vector2(-50, -50)),
+            _triangle = new FreeConvex(new Shape(new Vector2(50, 50), new Vector2(-50, 50), new Vector2(-50, -50)),
                 pos: new Vector2(450, 150));
             _mtvCircle = new DrawableCircle(50, new Vector2(0, 0), pos: new Vector2(150, 150));
             base.Initialize();
@@ -56,9 +58,9 @@ namespace CircleToPolygon {
                 _usingBoundingBoxes = false;
 
             if (mState.LeftButton == ButtonState.Pressed)
-                _circle.Position = mState.Position.ToVector2();
+                _circle._position = mState.Position.ToVector2();
             else if (mState.RightButton == ButtonState.Pressed)
-                _triangle.Position = mState.Position.ToVector2();
+                _triangle._position = mState.Position.ToVector2();
 
             if (kState.IsKeyDown(Keys.Q))
                 _circle.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
@@ -76,9 +78,9 @@ namespace CircleToPolygon {
                 _circle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (kState.IsKeyDown(Keys.D))
-                _triangle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _triangle._scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             else if (kState.IsKeyDown(Keys.F))
-                _triangle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _triangle._scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
 
             _broadColliding = false;
             _colliding = false;
@@ -96,7 +98,7 @@ namespace CircleToPolygon {
 
             if ((_mtv = _circle.CheckCollisionAndRespond(_triangle)) != Vector2.Zero) {
                 _colliding = true;
-                _mtvCircle.Position = _circle.Position + _mtv;
+                _mtvCircle._position = _circle._position + _mtv;
                 _mtvCircle.Rotation = _circle.Rotation;
                 _mtvCircle.Scale = _circle.Scale;
             }

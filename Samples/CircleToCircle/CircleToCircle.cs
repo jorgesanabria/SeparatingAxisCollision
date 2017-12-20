@@ -6,6 +6,7 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SeparatingAxisCollision;
+using SeparatingAxisCollision.polygons;
 using Color = Microsoft.Xna.Framework.Color;
 
 #endregion
@@ -55,29 +56,29 @@ namespace CircleToCircle {
                 _usingBoundingBoxes = false;
 
             if (mState.LeftButton == ButtonState.Pressed)
-                _circle.Position = mState.Position.ToVector2();
+                _circle.SetPosition(mState.Position.ToVector2());
             else if (mState.RightButton == ButtonState.Pressed)
-                _otherCircle.Position = mState.Position.ToVector2();
+                _otherCircle.SetPosition(mState.Position.ToVector2());
 
             if (kState.IsKeyDown(Keys.Q))
-                _circle.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _circle.SetRotation(_circle.GetRotation() + (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
             else if (kState.IsKeyDown(Keys.W))
-                _circle.Rotation += -(Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _circle.SetRotation(_circle.GetRotation() - (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
 
             if (kState.IsKeyDown(Keys.A))
-                _otherCircle.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _otherCircle.SetRotation(_circle.GetRotation() + (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
             else if (kState.IsKeyDown(Keys.S))
-                _otherCircle.Rotation += -(Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
+                _otherCircle.SetRotation(_circle.GetRotation() - (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
 
             if (kState.IsKeyDown(Keys.E))
-                _circle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _circle.SetScale(_circle.GetScale() + (Single)gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.R))
-                _circle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _circle.SetScale(_circle.GetScale() - (Single)gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.D))
-                _otherCircle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _otherCircle.SetScale(_circle.GetScale() + (Single)gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.F))
-                _otherCircle.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _otherCircle.SetScale(_circle.GetScale() - (Single)gameTime.ElapsedGameTime.TotalSeconds);
 
             _broadColliding = false;
             _colliding = false;
@@ -93,11 +94,11 @@ namespace CircleToCircle {
             if (_circleBounds.CollidesWith(_otherCircleBounds))
                 _broadColliding = true;
 
-            if ((_mtv = _circle.CheckCollisionAndRespond(_otherCircle)) != Vector2.Zero) {
+            if ((_mtv = Collision.CheckCollisionAndRespond(_circle, _otherCircle)) != Vector2.Zero) {
                 _colliding = true;
-                _mtvCircle.Position = _circle.Position + _mtv;
-                _mtvCircle.Rotation = _circle.Rotation;
-                _mtvCircle.Scale = _circle.Scale;
+                _mtvCircle.SetPosition(_circle.GetPosition() + _mtv);
+                _mtvCircle.SetRotation(_circle.GetRotation());
+                _mtvCircle.SetScale(_circle.GetScale());
             }
 
             if (_colliding && !_broadColliding)

@@ -6,13 +6,15 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SeparatingAxisCollision;
+using SeparatingAxisCollision.polygons;
 using Color = Microsoft.Xna.Framework.Color;
+using FreeConvex = SeparatingAxisCollision.polygons.FreeConvex;
 
 #endregion
 
 namespace PolygonToCircle {
     public class PolygonToCircle : Game {
-        private Polygon _box;
+        private FreeConvex _box;
 
         private RectangleF _boxBounds;
         private Boolean _broadColliding;
@@ -20,7 +22,7 @@ namespace PolygonToCircle {
         private RectangleF _circleBounds;
         private Boolean _colliding;
         private Vector2 _mtv = Vector2.Zero;
-        private Polygon _mtvBox;
+        private FreeConvex _mtvBox;
         private SpriteBatch _spriteBatch;
 
         private Boolean _usingBoundingBoxes = true;
@@ -33,9 +35,9 @@ namespace PolygonToCircle {
         }
 
         protected override void Initialize() {
-            _box = Polygon.CreateBox(50, 50, pos: new Vector2(150, 150));
+            _box = FreeConvex.CreateBox(50, 50, pos: new Vector2(150, 150));
             _circle = new DrawableCircle(35, new Vector2(0, 0), pos: new Vector2(450, 150));
-            _mtvBox = Polygon.CreateBox(50, 50, pos: new Vector2(150, 150));
+            _mtvBox = FreeConvex.CreateBox(50, 50, pos: new Vector2(150, 150));
             base.Initialize();
         }
 
@@ -54,9 +56,9 @@ namespace PolygonToCircle {
                 _usingBoundingBoxes = false;
 
             if (mState.LeftButton == ButtonState.Pressed)
-                _box.Position = mState.Position.ToVector2();
+                _box._position = mState.Position.ToVector2();
             else if (mState.RightButton == ButtonState.Pressed)
-                _circle.Position = mState.Position.ToVector2();
+                _circle._position = mState.Position.ToVector2();
 
             if (kState.IsKeyDown(Keys.Q))
                 _box.Rotation += (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
@@ -69,9 +71,9 @@ namespace PolygonToCircle {
                 _circle.Rotation += -(Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.E))
-                _box.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _box._scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
             else if (kState.IsKeyDown(Keys.R))
-                _box.Scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
+                _box._scale += -(Single)gameTime.ElapsedGameTime.TotalSeconds;
 
             if (kState.IsKeyDown(Keys.D))
                 _circle.Scale += (Single)gameTime.ElapsedGameTime.TotalSeconds;
@@ -94,9 +96,9 @@ namespace PolygonToCircle {
 
             if ((_mtv = _box.CheckCollisionAndRespond(_circle)) != Vector2.Zero) {
                 _colliding = true;
-                _mtvBox.Position = _box.Position + _mtv;
+                _mtvBox._position = _box._position + _mtv;
                 _mtvBox.Rotation = _box.Rotation;
-                _mtvBox.Scale = _box.Scale;
+                _mtvBox._scale = _box._scale;
             }
 
             if (_colliding && !_broadColliding)

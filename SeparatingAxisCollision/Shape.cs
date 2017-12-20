@@ -62,25 +62,5 @@ namespace SeparatingAxisCollision {
 
             return radius;
         }
-
-        /// <summary>
-        ///     Draws the Shape.
-        /// </summary>
-        /// <param name="pixel">A white pixel texture.</param>
-        /// <param name="spriteBatch">The SpriteBatch used for drawing.</param>
-        /// <param name="position">The position of the center of the shape.</param>
-        /// <param name="scale">The size of the shape.</param>
-        /// <param name="rotation">The rotation of the shape in radians, counter-clockwise.</param>
-        /// <param name="color">Color of the shape. If null, defaults to Gray.</param>
-        public void Draw(Texture2D pixel, SpriteBatch spriteBatch, Vector2? position = null, Single scale = 1.0f,
-            Single rotation = 0.0f, Color? color = null) {
-            Vector2 center = position ?? Vector2.Zero;
-            for (Int32 a = 0; a < Connections.Length; a++) {
-                Point pos = (Utils.RotateCentered(Points[a], rotation) * scale + center).ToPoint();
-                Int32 length = (Int32)(Connections[a].Length() * scale);
-                Single angle = (Single)(Utils.Angle(Connections[a]) + rotation);
-                pixel.DrawLine(spriteBatch, pos, length, angle, color);
-            }
-        }
     }
 }

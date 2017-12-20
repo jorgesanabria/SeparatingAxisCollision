@@ -13,6 +13,9 @@ Green			=> Bounds and Objects collide.
 [Z] to switch bounding mode to bounding boxes.
 [X] to switch bounding mode to bounding squares.
 
+[C] to switch polygon type of first object.
+[V] to switch polygon type of second object.
+
 Left Click to position first object.
 Right Click to position second object.
 

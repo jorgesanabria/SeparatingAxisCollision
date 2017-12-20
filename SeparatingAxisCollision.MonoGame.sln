@@ -6,9 +6,6 @@ MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeparatingAxisCollision", "SeparatingAxisCollision\SeparatingAxisCollision.csproj", "{D06DAB18-A7BD-4DB1-BC6B-4465C305C91F}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Samples", "Samples", "{F24F0737-6B7C-4F68-940A-13338A89B9B6}"
-	ProjectSection(SolutionItems) = preProject
-		Samples\SampleUse.txt = Samples\SampleUse.txt
-	EndProjectSection
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionTester.DesktopGL", "CollisionTester.DesktopGL\CollisionTester.DesktopGL.csproj", "{8AAFE2BE-6B6A-4838-BAE0-293FAB2429D1}"
 EndProject

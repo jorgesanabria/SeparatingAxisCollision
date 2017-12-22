@@ -1,17 +1,21 @@
-﻿using System;
+﻿#region using
+
+using System;
 using System.Drawing;
 using Microsoft.Xna.Framework;
+
+#endregion
 
 namespace SeparatingAxisCollision.polygons {
     public sealed class Ray : IPolygon {
         private readonly Single _length;
+        private Vector2 _endPointUnitCache;
+
+        private Boolean _isRotationDirty = true;
 
         private Vector2 _position;
         private Single _rotation;
         private Single _scale;
-
-        private Boolean _isRotationDirty = true;
-        private Vector2 _endPointUnitCache;
 
         public Ray(Single length, Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
             _length = length;
@@ -131,6 +135,7 @@ namespace SeparatingAxisCollision.polygons {
                 GetEndPointUnit()
             };
         }
+
         #endregion
     }
 }

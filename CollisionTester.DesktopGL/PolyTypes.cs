@@ -20,9 +20,10 @@ namespace CollisionTester.DesktopGL {
                 sides = 3;
 
             var points = new Vector2[sides];
-            for (Byte k = 1; k != sides + 1; k += 1)
+            for (Byte k = 1; k != sides + 1; k += 1) {
                 points[k - 1] = new Vector2((Single)Math.Cos(2 * k * Math.PI / sides),
                     (Single)Math.Sin(2 * k * Math.PI / sides));
+            }
 
             return new Shape(points);
         }

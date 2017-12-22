@@ -7,7 +7,6 @@ using Microsoft.Xna.Framework;
 #endregion
 
 namespace SeparatingAxisCollision {
-
     /* All IPolygons need:
     *  a readonly/implicit "origin" assigned at object creation.
     *  a get/set position of that origin
@@ -20,7 +19,6 @@ namespace SeparatingAxisCollision {
     */
 
     public interface IPolygon {
-
         /// <summary>
         ///     Gets the position of the axial center of the IPolygon.
         /// </summary>

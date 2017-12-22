@@ -1,6 +1,10 @@
-﻿using System;
+﻿#region using
+
+using System;
 using Microsoft.Xna.Framework;
 using SeparatingAxisCollision.polygons;
+
+#endregion
 
 namespace SeparatingAxisCollision {
     public static class Collision {

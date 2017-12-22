@@ -11,21 +11,20 @@ namespace SeparatingAxisCollision.polygons {
     ///     A rectangle used for collision.
     /// </summary>
     public sealed class Box : IPolygon {
-        private readonly Vector2 _offset;
-        private readonly Single _rotationOffset;
-        private readonly Single _halfWidth;
+        private readonly Single _boundingRadiusCache;
         private readonly Single _halfHeight;
+        private readonly Single _halfWidth;
+        private readonly Vector2 _offset;
+        private readonly Vector2[] _pointsUnitCache;
+        private readonly Single _rotationOffset;
+        private Boolean _isRotationDirty = true;
 
         private Vector2 _position;
+        private Vector2 _positionUnitCache;
         private Single _rotation;
         private Single _scale;
 
-        private readonly Single _boundingRadiusCache;
-        private Boolean _isRotationDirty = true;
-        private Vector2 _positionUnitCache;
-        private readonly Vector2[] _pointsUnitCache;
-
-        public Box(Single halfWidth, Single halfHeight, Single rotationOffset = 0f, Vector2? offset = null, 
+        public Box(Single halfWidth, Single halfHeight, Single rotationOffset = 0f, Vector2? offset = null,
             Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
             _halfWidth = halfWidth;
             _halfHeight = halfHeight;
@@ -108,7 +107,7 @@ namespace SeparatingAxisCollision.polygons {
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
-        
+
         public RectangleF GetBoundingBoxUnit() {
             var points = GetPtsUnit();
             Single yMin = Single.MaxValue;

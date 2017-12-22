@@ -11,18 +11,18 @@ namespace SeparatingAxisCollision.polygons {
     ///     A representation of all the points away from a center, used for collision.
     /// </summary>
     public sealed class Circle : IPolygon {
+        private readonly Single _boundingRadiusCache;
         public readonly Vector2 CenterOffset;
         public readonly Single Radius;
+        private Boolean _isRotationDirty = true;
 
         private Vector2 _position;
+        private Vector2 _positionUnitCache;
         private Single _rotation;
         private Single _scale;
 
-        private readonly Single _boundingRadiusCache;
-        private Boolean _isRotationDirty = true;
-        private Vector2 _positionUnitCache;
-        
-        public Circle(Single radius, Vector2? offset = null, Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
+        public Circle(Single radius, Vector2? offset = null, Vector2? pos = null, Single rotation = 0f,
+            Single scale = 1f) {
             Radius = radius;
             CenterOffset = offset ?? Vector2.Zero;
 
@@ -32,7 +32,7 @@ namespace SeparatingAxisCollision.polygons {
 
             _boundingRadiusCache = CenterOffset.Length() + radius;
         }
-        
+
         public Vector2 GetPosition() {
             return GetPositionUnit() * _scale + _position;
         }
@@ -59,13 +59,14 @@ namespace SeparatingAxisCollision.polygons {
         }
 
         public Vector2[] GetPoints() {
-            return new[] { GetPosition() };
+            return new[] {GetPosition()};
         }
 
         public Interval GetProjection(Vector2 axis) {
             Single start = Utils.DotProduct(axis, GetPosition());
             return new Interval(start - GetRadius(), start + GetRadius());
         }
+
         public Vector2[] GetNormals(IPolygon other) {
             var points = other.GetPoints();
             var axes = new Vector2[points.Length];
@@ -85,7 +86,7 @@ namespace SeparatingAxisCollision.polygons {
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
-        
+
         public RectangleF GetBoundingBoxUnit() {
             Vector2 position = GetPositionUnit();
             return new RectangleF(position.X - Radius, position.Y - Radius, Radius * 2, Radius * 2);
@@ -98,7 +99,7 @@ namespace SeparatingAxisCollision.polygons {
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
-        
+
         #region Private/Protected Methods
 
         /// <summary>

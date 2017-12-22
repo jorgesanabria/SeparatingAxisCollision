@@ -3,10 +3,6 @@
 using System;
 using System.Drawing;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 #endregion
 
@@ -15,7 +11,8 @@ namespace SeparatingAxisCollision {
         /// <summary>
         ///     A vector whose length squared is float.MaxValue.
         /// </summary>
-        public static Vector2 LargeVector = new Vector2((Single)Math.Pow(Single.MaxValue, 0.25), (Single)Math.Pow(Single.MaxValue, 0.25));
+        public static Vector2 LargeVector = new Vector2((Single)Math.Pow(Single.MaxValue, 0.25),
+            (Single)Math.Pow(Single.MaxValue, 0.25));
 
         /// <summary>
         ///     Returns true if a rectangle intersects, contains, or is contained by another.

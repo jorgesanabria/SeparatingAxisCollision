@@ -3,8 +3,6 @@
 using System;
 using System.Drawing;
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Graphics;
-using Color = Microsoft.Xna.Framework.Color;
 
 #endregion
 
@@ -13,19 +11,18 @@ namespace SeparatingAxisCollision.polygons {
     ///     A freeform variable-point polygon used for collision. Must be concave for collisions to work properly.
     /// </summary>
     public sealed class FreeConvex : IPolygon {
+        private readonly Single _boundingRadiusCache;
+        private readonly Vector2[] _pointsUnitCache;
         public readonly Shape Shape;
+        private Boolean _isRotationDirty = true;
 
         private Vector2 _position;
         private Single _rotation;
         private Single _scale;
 
-        private readonly Single _boundingRadiusCache;
-        private Boolean _isRotationDirty = true;
-        private readonly Vector2[] _pointsUnitCache;
-
         public FreeConvex(Shape shape, Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
             Shape = shape;
-            
+
             _position = pos ?? Vector2.Zero;
             _rotation = rotation;
             _scale = scale;
@@ -72,7 +69,7 @@ namespace SeparatingAxisCollision.polygons {
 
             return points;
         }
-        
+
         public Interval GetProjection(Vector2 axis) {
             var pts = GetPoints();
             Single start = Utils.DotProduct(axis, pts[0]);
@@ -101,13 +98,13 @@ namespace SeparatingAxisCollision.polygons {
             Single radius = _boundingRadiusCache;
             return new RectangleF(-radius, -radius, radius * 2, radius * 2);
         }
-        
+
         public RectangleF GetBoundingSquare() {
             RectangleF scaledRect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
             scaledRect.Offset(_position.X, _position.Y);
             return scaledRect;
         }
-        
+
         public RectangleF GetBoundingBoxUnit() {
             var points = GetPtsUnit();
             Single yMin = Single.MaxValue;
@@ -127,7 +124,7 @@ namespace SeparatingAxisCollision.polygons {
 
             return new RectangleF(xMin, yMin, xMax - xMin, yMax - yMin);
         }
-        
+
         public RectangleF GetBoundingBox() {
             RectangleF rect = GetBoundingBoxUnit();
             rect = rect.ScaledPositionFromOrigin(_scale);
@@ -135,7 +132,7 @@ namespace SeparatingAxisCollision.polygons {
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
-        
+
         #region Private Methods
 
         private Vector2[] GetPtsUnit() {
@@ -149,7 +146,7 @@ namespace SeparatingAxisCollision.polygons {
 
             return _pointsUnitCache;
         }
-        
+
         private Vector2[] GetSides() {
             var ret = new Vector2[Shape.Connections.Length];
             for (Int32 a = 0; a < Shape.Connections.Length; a++)

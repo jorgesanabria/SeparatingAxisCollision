@@ -1,66 +1,65 @@
 ﻿#region using
 
 using System;
-using System.Drawing;
-using Microsoft.Xna.Framework;
+using Starry.Math;
 
 #endregion
 
 namespace SeparatingAxisCollision.polygons {
     public sealed class Ray : IPolygon {
-        private readonly Single _length;
-        private Vector2 _endPointUnitCache;
+        private readonly Double _length;
+        private Vector2D _endPointUnitCache;
 
         private Boolean _isRotationDirty = true;
 
-        private Vector2 _position;
-        private Single _rotation;
-        private Single _scale;
+        private Vector2D _position;
+        private Double _rotation;
+        private Double _scale;
 
-        public Ray(Single length, Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
+        public Ray(Double length, Vector2D? pos = null, Double rotation = 0f, Double scale = 1f) {
             _length = length;
-            _position = pos ?? Vector2.Zero;
+            _position = pos ?? Vector2D.Zero;
             _rotation = rotation;
             _scale = scale;
         }
 
-        public Vector2 GetPosition() {
+        public Vector2D GetPosition() {
             return _position;
         }
 
-        public void SetPosition(Vector2 position) {
+        public void SetPosition(Vector2D position) {
             _position = position;
         }
 
-        public Single GetRotation() {
+        public Double GetRotation() {
             return _rotation;
         }
 
-        public void SetRotation(Single rotation) {
+        public void SetRotation(Double rotation) {
             _rotation = rotation;
             _isRotationDirty = true;
         }
 
-        public Single GetScale() {
+        public Double GetScale() {
             return _scale;
         }
 
-        public void SetScale(Single scale) {
+        public void SetScale(Double scale) {
             _scale = scale;
         }
 
-        public Vector2[] GetPoints() {
+        public Vector2D[] GetPoints() {
             return new[] {
                 _position,
                 _endPointUnitCache * _scale + _position
             };
         }
 
-        public Interval GetProjection(Vector2 axis) {
+        public Interval GetProjection(Vector2D axis) {
             var pts = GetPoints();
-            Single start = Utils.DotProduct(axis, pts[0]);
+            Double start = Vector2D.Dot(axis, pts[0]);
             Interval proj = new Interval(start, start);
-            Single d = Utils.DotProduct(axis, pts[1]);
+            Double d = Vector2D.Dot(axis, pts[1]);
 
             if (d > proj.Max)
                 proj.Max = d;
@@ -70,32 +69,32 @@ namespace SeparatingAxisCollision.polygons {
             return proj;
         }
 
-        public Vector2[] GetNormals(IPolygon other) {
+        public Vector2D[] GetNormals(IPolygon other) {
             var pts = GetPoints();
-            var axes = new Vector2[2];
+            var axes = new Vector2D[2];
 
-            axes[0] = Utils.Axis(pts[1] - pts[0]);
-            axes[1] = Utils.AxisNormal(pts[1] - pts[0], false);
+            axes[0] = Vector2D.Axis(pts[0], pts[1]);
+            axes[1] = Vector2D.AxisNormalLeft(pts[0], pts[1]);
 
             return axes;
         }
 
-        public RectangleF GetBoundingSquareUnit() {
-            return new RectangleF(-_length, -_length, _length * 2, _length * 2);
+        public RectD GetBoundingSquareUnit() {
+            return new RectD(-_length, -_length, _length * 2, _length * 2);
         }
 
-        public RectangleF GetBoundingSquare() {
-            RectangleF rect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
+        public RectD GetBoundingSquare() {
+            RectD rect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
 
-        public RectangleF GetBoundingBoxUnit() {
+        public RectD GetBoundingBoxUnit() {
             var points = GetPtsUnit();
-            Single yMin = Single.MaxValue;
-            Single yMax = Single.MinValue;
-            Single xMin = Single.MaxValue;
-            Single xMax = Single.MinValue;
+            Double yMin = Double.MaxValue;
+            Double yMax = Double.MinValue;
+            Double xMin = Double.MaxValue;
+            Double xMax = Double.MinValue;
             for (Int32 a = 0; a < points.Length; a++) {
                 if (points[a].Y < yMin)
                     yMin = points[a].Y;
@@ -107,11 +106,11 @@ namespace SeparatingAxisCollision.polygons {
                     xMax = points[a].X;
             }
 
-            return new RectangleF(xMin, yMin, xMax - xMin, yMax - yMin);
+            return new RectD(xMin, yMin, xMax - xMin, yMax - yMin);
         }
 
-        public RectangleF GetBoundingBox() {
-            RectangleF rect = GetBoundingBoxUnit();
+        public RectD GetBoundingBox() {
+            RectD rect = GetBoundingBoxUnit();
             rect = rect.ScaledPositionFromOrigin(_scale);
             rect = rect.ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
@@ -120,18 +119,18 @@ namespace SeparatingAxisCollision.polygons {
 
         #region Private Methods
 
-        private Vector2 GetEndPointUnit() {
+        private Vector2D GetEndPointUnit() {
             if (!_isRotationDirty)
                 return _endPointUnitCache;
 
-            _endPointUnitCache = Utils.RotateCentered(Vector2.UnitX, _rotation);
+            _endPointUnitCache = Vector2D.RotateCentered(Vector2D.Right, _rotation);
             _isRotationDirty = false;
             return _endPointUnitCache;
         }
 
-        private Vector2[] GetPtsUnit() {
+        private Vector2D[] GetPtsUnit() {
             return new[] {
-                Vector2.Zero,
+                Vector2D.Zero,
                 GetEndPointUnit()
             };
         }

@@ -4,11 +4,11 @@
   <PropertyGroup>
     <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
     <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
-    <ProjectGuid>{D06DAB18-A7BD-4DB1-BC6B-4465C305C91F}</ProjectGuid>
+    <ProjectGuid>{EE47183A-38AA-4F17-B016-B01E5A2CC4A6}</ProjectGuid>
     <OutputType>Library</OutputType>
     <AppDesignerFolder>Properties</AppDesignerFolder>
-    <RootNamespace>SeparatingAxisCollision</RootNamespace>
-    <AssemblyName>SeparatingAxisCollision</AssemblyName>
+    <RootNamespace>Starry.Math</RootNamespace>
+    <AssemblyName>Starry.Math</AssemblyName>
     <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
     <FileAlignment>512</FileAlignment>
     <TargetFrameworkProfile />
@@ -32,22 +32,14 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="polygons\Circle.cs" />
-    <Compile Include="Collision.cs" />
-    <Compile Include="polygons\Box.cs" />
-    <Compile Include="IPolygon.cs" />
-    <Compile Include="polygons\FreeConvex.cs" />
-    <Compile Include="polygons\Ray.cs" />
-    <Compile Include="Shape.cs" />
+    <Compile Include="Interval.cs" />
+    <Compile Include="MathD.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\Starry.Math\Starry.Math.csproj">
-      <Project>{ee47183a-38aa-4f17-b016-b01e5a2cc4a6}</Project>
-      <Name>Starry.Math</Name>
-    </ProjectReference>
+    <Compile Include="RectD.cs" />
+    <Compile Include="Vector2D.cs" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>

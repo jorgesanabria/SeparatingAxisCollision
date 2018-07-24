@@ -1,15 +1,12 @@
 ﻿#region using
 
 using System;
-using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SeparatingAxisCollision;
 using SeparatingAxisCollision.polygons;
-using Color = Microsoft.Xna.Framework.Color;
-using Point = Microsoft.Xna.Framework.Point;
+using Starry.Math;
 using Ray = SeparatingAxisCollision.polygons.Ray;
-using Rectangle = Microsoft.Xna.Framework.Rectangle;
 
 #endregion
 
@@ -20,8 +17,8 @@ namespace CollisionTester.DesktopGL {
         internal readonly SpriteBatch SpriteBatch;
 
         // Circle things
-        private Single _lastScale;
-        private Single _lastVisibleRadius;
+        private Double _lastScale;
+        private Double _lastVisibleRadius;
         private Texture2D _texture;
         internal IPolygon Polygon;
 
@@ -39,15 +36,16 @@ namespace CollisionTester.DesktopGL {
         }
 
         /// <summary>
-        ///     Draws an approximation of the RectangleF.
+        ///     Draws an approximation of the RectD.
         /// </summary>
-        internal static void Draw(RectangleF rect, Texture2D pixel, SpriteBatch spriteBatch, Color? color = null) {
-            DrawLine(pixel, spriteBatch, new Vector2(rect.Left, rect.Top), new Vector2(rect.Right, rect.Top), color);
-            DrawLine(pixel, spriteBatch, new Vector2(rect.Right, rect.Top), new Vector2(rect.Right, rect.Bottom),
+        internal static void Draw(RectD rect, Texture2D pixel, SpriteBatch spriteBatch, Color? color = null) {
+            DrawLine(pixel, spriteBatch, new Vector2D(rect.Left, rect.Top), new Vector2D(rect.Right, rect.Top), color);
+            DrawLine(pixel, spriteBatch, new Vector2D(rect.Right, rect.Top), new Vector2D(rect.Right, rect.Bottom),
                 color);
-            DrawLine(pixel, spriteBatch, new Vector2(rect.Right, rect.Bottom), new Vector2(rect.Left, rect.Bottom),
+            DrawLine(pixel, spriteBatch, new Vector2D(rect.Right, rect.Bottom), new Vector2D(rect.Left, rect.Bottom),
                 color);
-            DrawLine(pixel, spriteBatch, new Vector2(rect.Left, rect.Bottom), new Vector2(rect.Left, rect.Top), color);
+            DrawLine(pixel, spriteBatch, new Vector2D(rect.Left, rect.Bottom), new Vector2D(rect.Left, rect.Top),
+                color);
         }
 
         /// <summary>
@@ -58,10 +56,14 @@ namespace CollisionTester.DesktopGL {
         /// <param name="a">First point in line drawing.</param>
         /// <param name="b">Second point in line drawing.</param>
         /// <param name="color">Color of line. If null, defaults to Gray.</param>
-        private static void DrawLine(Texture2D pixel, SpriteBatch sb, Vector2 a, Vector2 b, Color? color = null) {
-            DrawLine(pixel, sb, a.ToPoint(), (Int32)Math.Round((a - b).Length()),
+        private static void DrawLine(Texture2D pixel, SpriteBatch sb, Vector2D a, Vector2D b, Color? color = null) {
+            DrawLine(pixel, sb, ToPoint(a), (Int32)Math.Round((a - b).Magnitude),
                 (Single)Math.Atan2(b.Y - a.Y, b.X - a.X),
                 color);
+        }
+
+        private static Point ToPoint(Vector2D vec) {
+            return new Point((Int32)vec.X, (Int32)vec.Y);
         }
 
         /// <summary>
@@ -99,15 +101,17 @@ namespace CollisionTester.DesktopGL {
                         _lastVisibleRadius = circle.Radius * _lastScale;
                         _texture = CreateTexture();
                     }
-                    SpriteBatch.Draw(_texture, circle.GetPosition(), color: color.Value,
+                    Vector2D circPos = circle.GetPosition();
+                    SpriteBatch.Draw(_texture, new Vector2((Single)circPos.X, (Single)circPos.Y), color: color.Value,
                         origin: new Vector2((Int32)_lastVisibleRadius, (Int32)_lastVisibleRadius));
                     break;
                 case FreeConvex poly:
-                    Vector2 center = poly.GetPosition();
+                    Vector2D center = poly.GetPosition();
                     for (Int32 a = 0; a < poly.Shape.Connections.Length; a++) {
-                        Point pos = (Utils.RotateCentered(poly.Shape.Points[a], poly.GetRotation()) * poly.GetScale()
-                                     + center).ToPoint();
-                        Int32 length = (Int32)(poly.Shape.Connections[a].Length() * poly.GetScale());
+                        Point pos = ToPoint(Vector2D.RotateCentered(poly.Shape.Points[a], poly.GetRotation())
+                                            * poly.GetScale()
+                                            + center);
+                        Int32 length = (Int32)(poly.Shape.Connections[a].Magnitude * poly.GetScale());
                         Single angle = (Single)(Math.Atan2(poly.Shape.Connections[a].Y, poly.Shape.Connections[a].X)
                                                 + poly.GetRotation());
                         DrawLine(_pixel, SpriteBatch, pos, length, angle, color);
@@ -132,8 +136,8 @@ namespace CollisionTester.DesktopGL {
             for (Int32 x = 0; x < diameter; x++) {
                 for (Int32 y = 0; y < diameter; y++) {
                     Int32 index = x * diameter + y;
-                    Vector2 pos = new Vector2(x - radius, y - radius);
-                    if (pos.LengthSquared() <= radiusSqr)
+                    Vector2D pos = new Vector2D(x - radius, y - radius);
+                    if (pos.SqrMagnitude <= radiusSqr)
                         colorData[index] = Color.White;
                     else
                         colorData[index] = Color.Transparent;

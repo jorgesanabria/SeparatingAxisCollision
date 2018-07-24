@@ -12,7 +12,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyTitle("Collision Tester Sample Project")]
 [assembly: AssemblyProduct("Collision Tester")]
 [assembly: AssemblyConfiguration("")]
-[assembly: AssemblyDescription("")]
+[assembly: AssemblyDescription("Testing app for SeparatingAxisCollision")]
 [assembly: AssemblyCompany("")]
 [assembly: AssemblyCopyright("Not Copyrighted")]
 [assembly: AssemblyTrademark("")]

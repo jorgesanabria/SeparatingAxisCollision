@@ -1,24 +1,23 @@
 ﻿#region using
 
 using System;
-using System.Drawing;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using SeparatingAxisCollision;
-using Color = Microsoft.Xna.Framework.Color;
+using Starry.Math;
 
 #endregion
 
 namespace CollisionTester.DesktopGL {
     public class CollisionTester : Game {
-        private RectangleF _alphaBounds;
+        private RectD _alphaBounds;
         private PolyDrawer _alphaDrawer;
 
         // Colliders
         private Byte _alphaPolyType;
         private PolyDrawer _alphaProjectionDrawer;
-        private RectangleF _betaBounds;
+        private RectD _betaBounds;
         private PolyDrawer _betaDrawer;
 
         private Byte _betaPolyType = 1;
@@ -30,7 +29,7 @@ namespace CollisionTester.DesktopGL {
         private GraphicsDeviceManager _graphics;
         // Else, use traditional bounding boxes.
         private KeyboardState _lastKeyState;
-        private Vector2 _minimumTranslationVector = Vector2.Zero
+        private Vector2D _minimumTranslationVector = Vector2D.Zero
             ; // The min. translation needed to move Alpha from Beta. Is Zero if they do not collide.
         private Texture2D _pixel;
         private IPolygon _polygonAlpha;
@@ -56,8 +55,8 @@ namespace CollisionTester.DesktopGL {
             _polygonBeta = PolyTypes.CreateDefaultPolygon(_betaPolyType);
             _polygonAlphaProjection = PolyTypes.CreateDefaultPolygon(_alphaPolyType);
 
-            _polygonAlpha.SetPosition(new Vector2(250, 250));
-            _polygonBeta.SetPosition(new Vector2(625, 250));
+            _polygonAlpha.SetPosition(new Vector2D(250, 250));
+            _polygonBeta.SetPosition(new Vector2D(625, 250));
 
             _polygonAlpha.SetScale(200);
             _polygonBeta.SetScale(200);
@@ -101,9 +100,9 @@ namespace CollisionTester.DesktopGL {
                 UsesBoundingSquares = true;
 
             if (mState.LeftButton == ButtonState.Pressed)
-                _polygonAlpha.SetPosition(mState.Position.ToVector2());
+                _polygonAlpha.SetPosition(new Vector2D(mState.Position.X, mState.Position.Y));
             else if (mState.RightButton == ButtonState.Pressed)
-                _polygonBeta.SetPosition(mState.Position.ToVector2());
+                _polygonBeta.SetPosition(new Vector2D(mState.Position.X, mState.Position.Y));
 
             if (kState.IsKeyDown(Keys.Q))
                 _polygonAlpha.SetRotation(_polygonAlpha.GetRotation()
@@ -140,19 +139,20 @@ namespace CollisionTester.DesktopGL {
                 _betaBounds = _polygonBeta.GetBoundingSquare();
             }
 
-            if (_alphaBounds.CollidesWith(_betaBounds))
+            if (_alphaBounds.Overlaps(_betaBounds))
                 _broadphaseColliding = true;
 
-            if ((_minimumTranslationVector = Collision.CheckCollisionAndRespond(_polygonAlpha, _polygonBeta))
-                != Vector2.Zero) {
+            _minimumTranslationVector = Collision.CheckCollisionAndRespond(_polygonAlpha, _polygonBeta);
+
+            if (_minimumTranslationVector != Vector2D.Zero) {
                 _colliding = true;
                 _polygonAlphaProjection.SetPosition(_polygonAlpha.GetPosition() + _minimumTranslationVector);
                 _polygonAlphaProjection.SetRotation(_polygonAlpha.GetRotation());
                 _polygonAlphaProjection.SetScale(_polygonAlpha.GetScale());
             }
 
-            if (_colliding && !_broadphaseColliding)
-                throw new Exception("Broadphase did not collide when SAT did!");
+            //if (_colliding && !_broadphaseColliding)
+            //    throw new Exception("Broadphase did not collide when SAT did!");
 
             _lastKeyState = kState;
             base.Update(gameTime);
@@ -160,9 +160,9 @@ namespace CollisionTester.DesktopGL {
 
         protected override void Draw(GameTime gameTime) {
             if (_colliding)
-                GraphicsDevice.Clear(Color.LightGreen);
+                GraphicsDevice.Clear(Color.LightBlue);
             else if (_broadphaseColliding)
-                GraphicsDevice.Clear(Color.LightYellow);
+                GraphicsDevice.Clear(Color.LightGreen);
             else
                 GraphicsDevice.Clear(Color.White);
 

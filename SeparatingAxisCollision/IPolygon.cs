@@ -1,8 +1,7 @@
 ﻿#region using
 
 using System;
-using System.Drawing;
-using Microsoft.Xna.Framework;
+using Starry.Math;
 
 #endregion
 
@@ -22,66 +21,66 @@ namespace SeparatingAxisCollision {
         /// <summary>
         ///     Gets the position of the axial center of the IPolygon.
         /// </summary>
-        Vector2 GetPosition();
+        Vector2D GetPosition();
 
         /// <summary>
         ///     Sets the position of the axial center of the IPolygon.
         /// </summary>
-        void SetPosition(Vector2 position);
+        void SetPosition(Vector2D position);
 
         /// <summary>
         ///     Gets the position of this IPolygon around its axial center.
         /// </summary>
-        Single GetRotation();
+        Double GetRotation();
 
         /// <summary>
         ///     Sets the position of this IPolygon around its axial center.
         /// </summary>
-        void SetRotation(Single rotation);
+        void SetRotation(Double rotation);
 
         /// <summary>
         ///     Gets the scale of this IPolygon from its axial center.
         /// </summary>
-        Single GetScale();
+        Double GetScale();
 
         /// <summary>
         ///     Sets the scale of this IPolygon from its axial center.
         /// </summary>
-        void SetScale(Single scale);
+        void SetScale(Double scale);
 
         /// <summary>
         ///     Gets the points of an IPolygon.
         /// </summary>
-        Vector2[] GetPoints();
+        Vector2D[] GetPoints();
 
         /// <summary>
         ///     Returns an interval that represents the projection of this IPolygon onto passed axis.
         /// </summary>
-        Interval GetProjection(Vector2 axis);
+        Interval GetProjection(Vector2D axis);
 
         /// <summary>
         ///     Gets the normals of this IPolygon to be tested against in collision.
         /// </summary>
-        Vector2[] GetNormals(IPolygon other);
+        Vector2D[] GetNormals(IPolygon other);
 
         /// <summary>
         ///     Gets the unscaled, untranslated rotation-less bounding square of this IPolygon.
         /// </summary>
-        RectangleF GetBoundingSquareUnit();
+        RectD GetBoundingSquareUnit();
 
         /// <summary>
         ///     Gets the rotation-less bounding square of this IPolygon.
         /// </summary>
-        RectangleF GetBoundingSquare();
+        RectD GetBoundingSquare();
 
         /// <summary>
         ///     Gets the unscaled, untranslated bounding box of this IPolygon.
         /// </summary>
-        RectangleF GetBoundingBoxUnit();
+        RectD GetBoundingBoxUnit();
 
         /// <summary>
         ///     Gets the minimum bounding box of this IPolygon.
         /// </summary>
-        RectangleF GetBoundingBox();
+        RectD GetBoundingBox();
     }
 }

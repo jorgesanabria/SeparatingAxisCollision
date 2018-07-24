@@ -1,7 +1,7 @@
 ﻿#region using
 
 using System;
-using Microsoft.Xna.Framework;
+using Starry.Math;
 
 #endregion
 
@@ -14,20 +14,20 @@ namespace SeparatingAxisCollision {
         ///     Each vector represents an offset from the center.
         ///     Example of connection (4 points): 0 to 1; 1 to 2; 2 to 3; 3 to 0;
         /// </summary>
-        public readonly Vector2[] Points;
+        public readonly Vector2D[] Points;
 
         /// <summary>
         ///     Each vector represents a directional sidelength vector.
         ///     Example of connection (4 points): 0 to 1; 1 to 2; 2 to 3; 3 to 0;
         /// </summary>
-        public readonly Vector2[] Connections;
+        public readonly Vector2D[] Connections;
 
-        public Shape(params Vector2[] points) {
+        public Shape(params Vector2D[] points) {
             if (points == null || points.Length < 3)
                 throw new NotSupportedException("Must pass a minimum of 3 points to create a Shape!");
 
             Points = points;
-            Connections = new Vector2[points.Length];
+            Connections = new Vector2D[points.Length];
             for (Int32 a = 0; a < points.Length; a++) {
                 if (a == points.Length - 1)
                     Connections[a] = points[0] - points[a];
@@ -41,8 +41,8 @@ namespace SeparatingAxisCollision {
         /// </summary>
         /// <returns></returns>
         public Shape Unit() {
-            Single r = BoundingRadius();
-            var pts = new Vector2[Points.Length];
+            Double r = BoundingRadius();
+            var pts = new Vector2D[Points.Length];
             for (Int32 b = 0; b < pts.Length; b++)
                 pts[b] = Points[b] / r;
 
@@ -52,11 +52,11 @@ namespace SeparatingAxisCollision {
         /// <summary>
         ///     Gets the minimum radius of a bounding circle for this Shape.
         /// </summary>
-        public Single BoundingRadius() {
-            Single radius = 1.0f;
+        public Double BoundingRadius() {
+            Double radius = 1.0f;
             for (Int32 a = 0; a < Points.Length; a++) {
-                if (Points[a].Length() > radius)
-                    radius = Points[a].Length();
+                if (Points[a].Magnitude > radius)
+                    radius = Points[a].Magnitude;
             }
 
             return radius;

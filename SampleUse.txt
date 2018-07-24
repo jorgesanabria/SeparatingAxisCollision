@@ -7,8 +7,8 @@ The third (red) polygon appears when there is a collision, and is the suggested 
 
 Background Colors:
 White			=> No Collision.
-Light Yellow	=> Bounds Collide, objects do not.
-Green			=> Bounds and Objects collide.
+Light Green     => Bounds Collide, objects do not.
+Blue     		=> Bounds and Objects collide.
 
 [Z] to switch bounding mode to bounding boxes.
 [X] to switch bounding mode to bounding squares.

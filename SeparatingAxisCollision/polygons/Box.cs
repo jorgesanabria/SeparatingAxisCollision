@@ -1,8 +1,7 @@
 ﻿#region using
 
 using System;
-using System.Drawing;
-using Microsoft.Xna.Framework;
+using Starry.Math;
 
 #endregion
 
@@ -11,73 +10,73 @@ namespace SeparatingAxisCollision.polygons {
     ///     A rectangle used for collision.
     /// </summary>
     public sealed class Box : IPolygon {
-        private readonly Single _boundingRadiusCache;
-        private readonly Single _halfHeight;
-        private readonly Single _halfWidth;
-        private readonly Vector2 _offset;
-        private readonly Vector2[] _pointsUnitCache;
-        private readonly Single _rotationOffset;
+        private readonly Double _boundingRadiusCache;
+        private readonly Double _halfHeight;
+        private readonly Double _halfWidth;
+        private readonly Vector2D _offset;
+        private readonly Vector2D[] _pointsUnitCache;
+        private readonly Double _rotationOffset;
         private Boolean _isRotationDirty = true;
 
-        private Vector2 _position;
-        private Vector2 _positionUnitCache;
-        private Single _rotation;
-        private Single _scale;
+        private Vector2D _position;
+        private Vector2D _positionUnitCache;
+        private Double _rotation;
+        private Double _scale;
 
-        public Box(Single halfWidth, Single halfHeight, Single rotationOffset = 0f, Vector2? offset = null,
-            Vector2? pos = null, Single rotation = 0f, Single scale = 1f) {
+        public Box(Double halfWidth, Double halfHeight, Double rotationOffset = 0f, Vector2D? offset = null,
+            Vector2D? pos = null, Double rotation = 0f, Double scale = 1f) {
             _halfWidth = halfWidth;
             _halfHeight = halfHeight;
             _rotationOffset = rotationOffset;
-            _offset = offset ?? Vector2.Zero;
+            _offset = offset ?? Vector2D.Zero;
 
-            _position = pos ?? Vector2.Zero;
+            _position = pos ?? Vector2D.Zero;
             _rotation = rotation;
             _scale = scale;
 
-            _boundingRadiusCache = new Vector2(halfWidth, halfHeight).Length();
-            _pointsUnitCache = new Vector2[4];
+            _boundingRadiusCache = new Vector2D(halfWidth, halfHeight).Magnitude;
+            _pointsUnitCache = new Vector2D[4];
         }
 
-        public Vector2 GetPosition() {
+        public Vector2D GetPosition() {
             return GetPositionUnit() * _scale + _position;
         }
 
-        public void SetPosition(Vector2 position) {
+        public void SetPosition(Vector2D position) {
             _position = position;
         }
 
-        public Single GetRotation() {
+        public Double GetRotation() {
             return _rotation + _rotationOffset;
         }
 
-        public void SetRotation(Single rotation) {
+        public void SetRotation(Double rotation) {
             _rotation = rotation;
             _isRotationDirty = true;
         }
 
-        public Single GetScale() {
+        public Double GetScale() {
             return _scale;
         }
 
-        public void SetScale(Single scale) {
+        public void SetScale(Double scale) {
             _scale = scale;
         }
 
-        public Vector2[] GetPoints() {
-            var points = new Vector2[GetPtsUnit().Length];
+        public Vector2D[] GetPoints() {
+            var points = new Vector2D[GetPtsUnit().Length];
             for (Int32 a = 0; a < points.Length; a++)
                 points[a] = _pointsUnitCache[a] * _scale + GetPosition();
 
             return points;
         }
 
-        public Interval GetProjection(Vector2 axis) {
+        public Interval GetProjection(Vector2D axis) {
             var pts = GetPoints();
-            Single start = Utils.DotProduct(axis, pts[0]);
+            Double start = Vector2D.Dot(axis, pts[0]);
             Interval proj = new Interval(start, start);
             for (Int32 a = 1; a < pts.Length; a++) {
-                Single d = Utils.DotProduct(axis, pts[a]);
+                Double d = Vector2D.Dot(axis, pts[a]);
                 if (d > proj.Max)
                     proj.Max = d;
                 else if (d < proj.Min)
@@ -87,33 +86,33 @@ namespace SeparatingAxisCollision.polygons {
             return proj;
         }
 
-        public Vector2[] GetNormals(IPolygon other) {
+        public Vector2D[] GetNormals(IPolygon other) {
             var pts = GetPoints();
-            var axes = new Vector2[2];
+            var axes = new Vector2D[2];
 
-            axes[0] = Utils.AxisNormal(pts[1] - pts[0], false);
-            axes[1] = Utils.AxisNormal(pts[2] - pts[1], false);
+            axes[0] = Vector2D.AxisNormalLeft(pts[0], pts[1]);
+            axes[1] = Vector2D.AxisNormalLeft(pts[1], pts[2]);
 
             return axes;
         }
 
-        public RectangleF GetBoundingSquareUnit() {
-            Single radius = _boundingRadiusCache;
-            return new RectangleF(-radius, -radius, radius * 2, radius * 2);
+        public RectD GetBoundingSquareUnit() {
+            Double radius = _boundingRadiusCache;
+            return new RectD(-radius, -radius, radius * 2, radius * 2);
         }
 
-        public RectangleF GetBoundingSquare() {
-            RectangleF rect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
+        public RectD GetBoundingSquare() {
+            RectD rect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
             return rect;
         }
 
-        public RectangleF GetBoundingBoxUnit() {
+        public RectD GetBoundingBoxUnit() {
             var points = GetPtsUnit();
-            Single yMin = Single.MaxValue;
-            Single yMax = Single.MinValue;
-            Single xMin = Single.MaxValue;
-            Single xMax = Single.MinValue;
+            Double yMin = Double.MaxValue;
+            Double yMax = Double.MinValue;
+            Double xMin = Double.MaxValue;
+            Double xMax = Double.MinValue;
             for (Int32 a = 0; a < points.Length; a++) {
                 if (points[a].Y < yMin)
                     yMin = points[a].Y;
@@ -125,11 +124,11 @@ namespace SeparatingAxisCollision.polygons {
                     xMax = points[a].X;
             }
 
-            return new RectangleF(xMin, yMin, xMax - xMin, yMax - yMin);
+            return new RectD(xMin, yMin, xMax - xMin, yMax - yMin);
         }
 
-        public RectangleF GetBoundingBox() {
-            RectangleF rect = GetBoundingBoxUnit();
+        public RectD GetBoundingBox() {
+            RectD rect = GetBoundingBoxUnit();
             rect = rect.ScaledPositionFromOrigin(_scale);
             rect = rect.ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
@@ -141,23 +140,23 @@ namespace SeparatingAxisCollision.polygons {
         /// <summary>
         ///     Gets the unscaled, untranslated center position of the Circle.
         /// </summary>
-        private Vector2 GetPositionUnit() {
+        private Vector2D GetPositionUnit() {
             if (!_isRotationDirty)
                 return _positionUnitCache;
 
-            _positionUnitCache = Utils.RotateCentered(_offset, GetRotation());
+            _positionUnitCache = Vector2D.RotateCentered(_offset, GetRotation());
             _isRotationDirty = false;
-            return new Vector2(_positionUnitCache.X, _positionUnitCache.Y);
+            return _positionUnitCache;
         }
 
-        private Vector2[] GetPtsUnit() {
+        private Vector2D[] GetPtsUnit() {
             if (!_isRotationDirty)
                 return _pointsUnitCache;
 
-            _pointsUnitCache[0] = Utils.RotateCentered(new Vector2(-_halfWidth, _halfHeight), GetRotation());
-            _pointsUnitCache[1] = Utils.RotateCentered(new Vector2(_halfWidth, _halfHeight), GetRotation());
-            _pointsUnitCache[2] = Utils.RotateCentered(new Vector2(_halfWidth, -_halfHeight), GetRotation());
-            _pointsUnitCache[3] = Utils.RotateCentered(new Vector2(-_halfWidth, -_halfHeight), GetRotation());
+            _pointsUnitCache[0] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, _halfHeight), GetRotation());
+            _pointsUnitCache[1] = Vector2D.RotateCentered(new Vector2D(_halfWidth, _halfHeight), GetRotation());
+            _pointsUnitCache[2] = Vector2D.RotateCentered(new Vector2D(_halfWidth, -_halfHeight), GetRotation());
+            _pointsUnitCache[3] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, -_halfHeight), GetRotation());
 
             _isRotationDirty = false;
 

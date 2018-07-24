@@ -1,9 +1,11 @@
 # SeparatingAxisCollision.MonoGame
-## simple SAT-based collision detection and response library for MonoGame 3.6
+## simple SAT-based collision detection and response library for .NET
 
 You will need Visual Studio 2017 with C# installed to open and compile the projects. All projects have their MonoGame-based dependencies linked to NuGet packages, so you should be able to build the project and run any one of the samples from the get-go.
 
 ## Updates
+
+Version 2.1 bases all calculations on Doubles instead of Singles now. It adds in Starry.Math, a Unity-esque double-precision floating point math library that handles all the math code used in SeparatingAxisCollision. SeparatingAxisCollision no longer depends on MonoGame or System.Drawing! The CollisionTester's colliding colors have now changed. See SampleUse.txt for more info!
 
 Version 2.0 rehauls the project for large improvements. Collision queries are now done through the static Collision class. Two new primitives, Box and Ray, are added. There is now only one sample project that is able to check collision between any two types of IPolygon primitive. Unnecessary drawing code has been moved to the sample project, to indicate that I will not be maintaining/optimizing such code.
 
@@ -28,5 +30,3 @@ Bounding boxes are also provided. You can use GetBoundingBox() or GetBoundingSqu
 ## To-Do
 
 - Broadphase system utilizing a spatial hash or a quadtree to optimize away unneeded SAT checks in 2D space.
-
-

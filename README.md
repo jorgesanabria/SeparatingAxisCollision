@@ -1,7 +1,7 @@
-# SeparatingAxisCollision.MonoGame
+# SeparatingAxisCollision
 ## simple SAT-based collision detection and response library for .NET
 
-You will need Visual Studio 2017 with C# installed to open and compile the projects. All projects have their MonoGame-based dependencies linked to NuGet packages, so you should be able to build the project and run any one of the samples from the get-go.
+You will need Visual Studio 2017 with C# installed to open and compile the projects. The CollisionTester app has its MonoGame dependency linked via NuGet, so with an IDE you should be able to build and run from the get-go.
 
 ## Updates
 

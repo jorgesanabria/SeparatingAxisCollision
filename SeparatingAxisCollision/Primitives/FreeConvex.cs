@@ -5,41 +5,39 @@ using Starry.Math;
 
 #endregion
 
-namespace SeparatingAxisCollision.polygons {
+namespace SeparatingAxisCollision.Primitives {
     /// <summary>
-    ///     A rectangle used for collision.
+    ///     A freeform variable-point polygon used for collision. Must be concave for collisions to work properly.
     /// </summary>
-    public sealed class Box : IPolygon {
+    public sealed class FreeConvex : IPolygon {
         private readonly Double _boundingRadiusCache;
-        private readonly Double _halfHeight;
-        private readonly Double _halfWidth;
-        private readonly Vector2D _offset;
         private readonly Vector2D[] _pointsUnitCache;
-        private readonly Double _rotationOffset;
+        public readonly Shape Shape;
         private Boolean _isRotationDirty = true;
 
         private Vector2D _position;
-        private Vector2D _positionUnitCache;
         private Double _rotation;
         private Double _scale;
 
-        public Box(Double halfWidth, Double halfHeight, Double rotationOffset = 0f, Vector2D? offset = null,
-            Vector2D? pos = null, Double rotation = 0f, Double scale = 1f) {
-            _halfWidth = halfWidth;
-            _halfHeight = halfHeight;
-            _rotationOffset = rotationOffset;
-            _offset = offset ?? Vector2D.Zero;
+        public FreeConvex(Shape shape, Vector2D? pos = null, Double rotation = 0f, Double scale = 1f) {
+            Shape = shape;
 
             _position = pos ?? Vector2D.Zero;
             _rotation = rotation;
             _scale = scale;
 
-            _boundingRadiusCache = new Vector2D(halfWidth, halfHeight).Magnitude;
-            _pointsUnitCache = new Vector2D[4];
+            Double radius = Double.MinValue;
+            for (Int32 a = 0; a < Shape.Points.Length; a++) {
+                if (Shape.Points[a].SqrMagnitude > radius)
+                    radius = Shape.Points[a].SqrMagnitude;
+            }
+
+            _boundingRadiusCache = Math.Sqrt(radius);
+            _pointsUnitCache = new Vector2D[Shape.Points.Length];
         }
 
         public Vector2D GetPosition() {
-            return GetPositionUnit() * _scale + _position;
+            return _position;
         }
 
         public void SetPosition(Vector2D position) {
@@ -47,7 +45,7 @@ namespace SeparatingAxisCollision.polygons {
         }
 
         public Double GetRotation() {
-            return _rotation + _rotationOffset;
+            return _rotation;
         }
 
         public void SetRotation(Double rotation) {
@@ -66,7 +64,7 @@ namespace SeparatingAxisCollision.polygons {
         public Vector2D[] GetPoints() {
             var points = new Vector2D[GetPtsUnit().Length];
             for (Int32 a = 0; a < points.Length; a++)
-                points[a] = _pointsUnitCache[a] * _scale + GetPosition();
+                points[a] = _pointsUnitCache[a] * _scale + _position;
 
             return points;
         }
@@ -87,11 +85,10 @@ namespace SeparatingAxisCollision.polygons {
         }
 
         public Vector2D[] GetNormals(IPolygon other) {
-            var pts = GetPoints();
-            var axes = new Vector2D[2];
-
-            axes[0] = Vector2D.AxisNormalLeft(pts[0], pts[1]);
-            axes[1] = Vector2D.AxisNormalLeft(pts[1], pts[2]);
+            var cons = GetSides();
+            var axes = new Vector2D[cons.Length];
+            for (Int32 a = 0; a < cons.Length; a++)
+                axes[a] = Vector2D.AxisNormalLeft(cons[a]);
 
             return axes;
         }
@@ -102,9 +99,9 @@ namespace SeparatingAxisCollision.polygons {
         }
 
         public RectD GetBoundingSquare() {
-            RectD rect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
-            rect.Offset(_position.X, _position.Y);
-            return rect;
+            RectD scaledRect = GetBoundingSquareUnit().ScaledFromCenter(_scale);
+            scaledRect.Offset(_position.X, _position.Y);
+            return scaledRect;
         }
 
         public RectD GetBoundingBoxUnit() {
@@ -137,30 +134,24 @@ namespace SeparatingAxisCollision.polygons {
 
         #region Private Methods
 
-        /// <summary>
-        ///     Gets the unscaled, untranslated center position of the Circle.
-        /// </summary>
-        private Vector2D GetPositionUnit() {
-            if (!_isRotationDirty)
-                return _positionUnitCache;
-
-            _positionUnitCache = Vector2D.RotateCentered(_offset, GetRotation());
-            _isRotationDirty = false;
-            return _positionUnitCache;
-        }
-
         private Vector2D[] GetPtsUnit() {
             if (!_isRotationDirty)
                 return _pointsUnitCache;
 
-            _pointsUnitCache[0] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, _halfHeight), GetRotation());
-            _pointsUnitCache[1] = Vector2D.RotateCentered(new Vector2D(_halfWidth, _halfHeight), GetRotation());
-            _pointsUnitCache[2] = Vector2D.RotateCentered(new Vector2D(_halfWidth, -_halfHeight), GetRotation());
-            _pointsUnitCache[3] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, -_halfHeight), GetRotation());
+            for (Int32 a = 0; a < _pointsUnitCache.Length; a++)
+                _pointsUnitCache[a] = Vector2D.RotateCentered(Shape.Points[a], _rotation);
 
             _isRotationDirty = false;
 
             return _pointsUnitCache;
+        }
+
+        private Vector2D[] GetSides() {
+            var ret = new Vector2D[Shape.Connections.Length];
+            for (Int32 a = 0; a < Shape.Connections.Length; a++)
+                ret[a] = Vector2D.RotateCentered(Shape.Connections[a], _rotation) * _scale;
+
+            return ret;
         }
 
         #endregion

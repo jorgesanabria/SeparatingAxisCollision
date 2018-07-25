@@ -1,9 +1,11 @@
 # SeparatingAxisCollision
-## simple SAT-based collision detection and response library for .NET
+## simple 2D SAT-based collision detection and response library for .NET
 
-You will need Visual Studio 2017 with C# installed to open and compile the projects. The CollisionTester app has its MonoGame dependency linked via NuGet, so with an IDE you should be able to build and run from the get-go.
+You will need Visual Studio 2017 with .NET Framework and .NET Core SDK installed to open and compile the projects. The CollisionTester app has its MonoGame dependency linked via NuGet, so with an IDE you should be able to build and run from the get-go.
 
 ## Updates
+
+Version 2.2 changes the project types to multitarget .NET Framework 4.5 and .NET Standard 1.0. SeparatingAxisCollision.polygons was renamed to SeparatingAxisCollision.Primitives. Functionality remains identical to version 2.1.
 
 Version 2.1 bases all calculations on Doubles instead of Singles now. It adds in Starry.Math, a Unity-esque double-precision floating point math library that handles all the math code used in SeparatingAxisCollision. SeparatingAxisCollision no longer depends on MonoGame or System.Drawing! The CollisionTester's colliding colors have now changed. See SampleUse.txt for more info!
 

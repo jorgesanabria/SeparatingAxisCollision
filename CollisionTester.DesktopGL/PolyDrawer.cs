@@ -4,9 +4,9 @@ using System;
 using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using SeparatingAxisCollision;
-using SeparatingAxisCollision.polygons;
+using SeparatingAxisCollision.Primitives;
 using Starry.Math;
-using Ray = SeparatingAxisCollision.polygons.Ray;
+using Ray = SeparatingAxisCollision.Primitives.Ray;
 
 #endregion
 

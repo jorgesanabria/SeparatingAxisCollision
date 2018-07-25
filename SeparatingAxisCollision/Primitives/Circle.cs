@@ -5,7 +5,7 @@ using Starry.Math;
 
 #endregion
 
-namespace SeparatingAxisCollision.polygons {
+namespace SeparatingAxisCollision.Primitives {
     /// <summary>
     ///     A representation of all the points away from a center, used for collision.
     /// </summary>

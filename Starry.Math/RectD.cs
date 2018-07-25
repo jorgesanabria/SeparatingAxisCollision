@@ -1,7 +1,6 @@
 ﻿#region using
 
 using System;
-using System.ComponentModel;
 
 // ReSharper disable CompareOfFloatsByEqualityOperator
 // ReSharper disable InconsistentNaming
@@ -13,7 +12,6 @@ namespace Starry.Math {
     /// <summary>
     ///     Stores the location and size of a rectangular region.
     /// </summary>
-    [Serializable]
     public struct RectD : IEquatable<RectD> {
         /// <summary>
         ///     Initializes a new instance of the <see cref='RectD' />
@@ -23,11 +21,6 @@ namespace Starry.Math {
 
         #region Do not refactor (binary serialization)
 
-        private Double x;
-        private Double y;
-        private Double width;
-        private Double height;
-
         #endregion
 
         /// <summary>
@@ -35,10 +28,10 @@ namespace Starry.Math {
         ///     class with the specified location and size.
         /// </summary>
         public RectD(Double x, Double y, Double width, Double height) {
-            this.x = x;
-            this.y = y;
-            this.width = width;
-            this.height = height;
+            X = x;
+            Y = y;
+            Width = width;
+            Height = height;
         }
 
         /// <summary>
@@ -47,10 +40,10 @@ namespace Starry.Math {
         ///     and size.
         /// </summary>
         public RectD(Vector2D location, Vector2D size) {
-            x = location.X;
-            y = location.Y;
-            width = size.X;
-            height = size.Y;
+            X = location.X;
+            Y = location.Y;
+            Width = size.X;
+            Height = size.Y;
         }
 
         /// <summary>
@@ -66,7 +59,6 @@ namespace Starry.Math {
         ///     Gets or sets the coordinates of the upper-left corner of
         ///     the rectangular region represented by this <see cref='RectD' />.
         /// </summary>
-        [Browsable(false)]
         public Vector2D Location {
             get => new Vector2D(X, Y);
             set {
@@ -78,7 +70,6 @@ namespace Starry.Math {
         /// <summary>
         ///     Gets or sets the size of this <see cref='RectD' />.
         /// </summary>
-        [Browsable(false)]
         public Vector2D Size {
             get => new Vector2D(Width, Height);
             set {
@@ -91,39 +82,29 @@ namespace Starry.Math {
         ///     Gets or sets the x-coordinate of the upper-left corner
         ///     of the rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        public Double X {
-            get => x;
-            set => x = value;
-        }
+        public Double X { get; set; }
 
         /// <summary>
         ///     Gets or sets the y-coordinate of the upper-left corner
         ///     of the rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        public Double Y {
-            get => y;
-            set => y = value;
-        }
+        public Double Y { get; set; }
 
         /// <summary>
         ///     Gets or sets the width of the rectangular
         ///     region defined by this <see cref='RectD' />.
         /// </summary>
-        public Double Width {
-            get => width;
-            set => width = value;
-        }
+        public Double Width { get; set; }
 
         /// <summary>
         ///     Gets or sets the region on the X axis of the
         ///     rectangular region defined by this <see cref="RectD" />
         /// </summary>
-        [Browsable(false)]
         public Interval IntervalX {
-            get => new Interval(x, x + width);
+            get => new Interval(X, X + Width);
             set {
-                x = value.Min;
-                width = value.Max - value.Min;
+                X = value.Min;
+                Width = value.Max - value.Min;
             }
         }
 
@@ -131,21 +112,17 @@ namespace Starry.Math {
         ///     Gets or sets the height of the
         ///     rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        public Double Height {
-            get => height;
-            set => height = value;
-        }
+        public Double Height { get; set; }
 
         /// <summary>
         ///     Gets or sets the region on the Y axis of the
         ///     rectangular region defined by this <see cref="RectD" />
         /// </summary>
-        [Browsable(false)]
         public Interval IntervalY {
-            get => new Interval(y, y + height);
+            get => new Interval(Y, Y + Height);
             set {
-                y = value.Min;
-                height = value.Max - value.Min;
+                Y = value.Min;
+                Height = value.Max - value.Min;
             }
         }
 
@@ -153,7 +130,6 @@ namespace Starry.Math {
         ///     Gets the x-coordinate of the upper-left corner of the
         ///     rectangular region defined by this <see cref='RectD' /> .
         /// </summary>
-        [Browsable(false)]
         public Double Left {
             get => X;
         }
@@ -162,7 +138,6 @@ namespace Starry.Math {
         ///     Gets the y-coordinate of the upper-left corner of the
         ///     rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        [Browsable(false)]
         public Double Top {
             get => Y;
         }
@@ -171,7 +146,6 @@ namespace Starry.Math {
         ///     Gets the x-coordinate of the lower-right corner of the
         ///     rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        [Browsable(false)]
         public Double Right {
             get => X + Width;
         }
@@ -180,7 +154,6 @@ namespace Starry.Math {
         ///     Gets the y-coordinate of the lower-right corner of the
         ///     rectangular region defined by this <see cref='RectD' />.
         /// </summary>
-        [Browsable(false)]
         public Double Bottom {
             get => Y + Height;
         }
@@ -189,7 +162,6 @@ namespace Starry.Math {
         ///     Tests whether this <see cref='RectD' /> has a <see cref='Width' /> or a
         ///     <see cref='Height' /> of 0.
         /// </summary>
-        [Browsable(false)]
         public Boolean IsEmpty {
             get => Width <= 0 || Height <= 0;
         }
@@ -353,10 +325,7 @@ namespace Starry.Math {
         ///     Determines if this rectangle overlaps another rect.
         /// </summary>
         public Boolean Overlaps(RectD rect) {
-            Boolean x = IntervalX.Overlaps(rect.IntervalX);
-            Boolean y = IntervalY.Overlaps(rect.IntervalY);
-
-            return x && y;
+            return IntervalX.Overlaps(rect.IntervalX) && IntervalY.Overlaps(rect.IntervalY);
         }
 
         /// <summary>

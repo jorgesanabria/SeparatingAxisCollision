@@ -2,7 +2,7 @@
 
 using System;
 using SeparatingAxisCollision;
-using SeparatingAxisCollision.polygons;
+using SeparatingAxisCollision.Primitives;
 using Starry.Math;
 
 #endregion

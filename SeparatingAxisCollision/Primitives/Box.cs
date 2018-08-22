@@ -16,7 +16,8 @@ namespace SeparatingAxisCollision.Primitives {
         private readonly Vector2D _offset;
         private readonly Vector2D[] _pointsUnitCache;
         private readonly Double _rotationOffset;
-        private Boolean _isRotationDirty = true;
+        private Boolean _isOffsetDirty = true;
+        private Boolean _isPointsDirty = true;
 
         private Vector2D _position;
         private Vector2D _positionUnitCache;
@@ -52,7 +53,8 @@ namespace SeparatingAxisCollision.Primitives {
 
         public void SetRotation(Double rotation) {
             _rotation = rotation;
-            _isRotationDirty = true;
+            _isOffsetDirty = true;
+            _isPointsDirty = true;
         }
 
         public Double GetScale() {
@@ -141,16 +143,16 @@ namespace SeparatingAxisCollision.Primitives {
         ///     Gets the unscaled, untranslated center position of the Circle.
         /// </summary>
         private Vector2D GetPositionUnit() {
-            if (!_isRotationDirty)
+            if (!_isOffsetDirty)
                 return _positionUnitCache;
 
             _positionUnitCache = Vector2D.RotateCentered(_offset, GetRotation());
-            _isRotationDirty = false;
+            _isOffsetDirty = false;
             return _positionUnitCache;
         }
 
         private Vector2D[] GetPtsUnit() {
-            if (!_isRotationDirty)
+            if (!_isPointsDirty)
                 return _pointsUnitCache;
 
             _pointsUnitCache[0] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, _halfHeight), GetRotation());
@@ -158,7 +160,7 @@ namespace SeparatingAxisCollision.Primitives {
             _pointsUnitCache[2] = Vector2D.RotateCentered(new Vector2D(_halfWidth, -_halfHeight), GetRotation());
             _pointsUnitCache[3] = Vector2D.RotateCentered(new Vector2D(-_halfWidth, -_halfHeight), GetRotation());
 
-            _isRotationDirty = false;
+            _isPointsDirty = false;
 
             return _pointsUnitCache;
         }

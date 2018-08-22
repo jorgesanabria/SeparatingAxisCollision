@@ -5,6 +5,8 @@ You will need Visual Studio 2017 with .NET Framework and .NET Core SDK installed
 
 ## Updates
 
+Version 2.2.1 fixes a bug where Box's points would not update on rotation in certain situations and also renames the solution to the proper name.
+
 Version 2.2 changes the project types to multitarget .NET Framework 4.5 and .NET Standard 1.0. SeparatingAxisCollision.polygons was renamed to SeparatingAxisCollision.Primitives. Functionality remains identical to version 2.1.
 
 Version 2.1 bases all calculations on Doubles instead of Singles now. It adds in Starry.Math, a Unity-esque double-precision floating point math library that handles all the math code used in SeparatingAxisCollision. SeparatingAxisCollision no longer depends on MonoGame or System.Drawing! The CollisionTester's colliding colors have now changed. See SampleUse.txt for more info!

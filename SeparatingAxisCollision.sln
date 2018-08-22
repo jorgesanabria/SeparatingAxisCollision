@@ -5,9 +5,9 @@ VisualStudioVersion = 15.0.27130.2020
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "CollisionTester.DesktopGL", "CollisionTester.DesktopGL\CollisionTester.DesktopGL.csproj", "{8AAFE2BE-6B6A-4838-BAE0-293FAB2429D1}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Starry.Math", "Starry.Math\Starry.Math.csproj", "{17DA9411-B601-4803-BC47-238C2B59D0F7}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Starry.Math", "Starry.Math\Starry.Math.csproj", "{17DA9411-B601-4803-BC47-238C2B59D0F7}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SeparatingAxisCollision", "SeparatingAxisCollision\SeparatingAxisCollision.csproj", "{D8CA24D2-3060-4AD8-A967-FDC739A45D82}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "SeparatingAxisCollision", "SeparatingAxisCollision\SeparatingAxisCollision.csproj", "{D8CA24D2-3060-4AD8-A967-FDC739A45D82}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

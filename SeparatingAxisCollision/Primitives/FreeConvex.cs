@@ -132,6 +132,27 @@ namespace SeparatingAxisCollision.Primitives {
             return rect;
         }
 
+        public IPolygon Clone() {
+            return new FreeConvex(Shape, _position, _rotation, _scale);
+        }
+
+        public void Translate(Vector2D translation) {
+            _position += translation;
+        }
+
+        public void Rotate(Double angle) {
+            _rotation += angle;
+            _isRotationDirty = true;
+        }
+
+        public void AddScale(Double amount) {
+            _scale += amount;
+        }
+
+        public void MultiplyScale(Double factor) {
+            _scale *= factor;
+        }
+
         #region Private Methods
 
         private Vector2D[] GetPtsUnit() {

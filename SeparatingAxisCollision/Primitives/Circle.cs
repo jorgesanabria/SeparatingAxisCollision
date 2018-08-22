@@ -40,7 +40,7 @@ namespace SeparatingAxisCollision.Primitives {
         }
 
         public void SetPosition(Vector2D position) {
-            _position = position;
+            _position = position - GetPositionUnit() * _scale;
         }
 
         public Double GetRotation() {
@@ -100,6 +100,27 @@ namespace SeparatingAxisCollision.Primitives {
             rect = rect.ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
             return rect;
+        }
+
+        public IPolygon Clone() {
+            return new Circle(Radius, CenterOffset, _position, _rotation, _scale);
+        }
+
+        public void Translate(Vector2D translation) {
+            _position += translation;
+        }
+
+        public void Rotate(Double angle) {
+            _rotation += angle;
+            _isRotationDirty = true;
+        }
+
+        public void AddScale(Double amount) {
+            _scale += amount;
+        }
+
+        public void MultiplyScale(Double factor) {
+            _scale *= factor;
         }
 
         #region Private/Protected Methods

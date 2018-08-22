@@ -5,6 +5,8 @@ You will need Visual Studio 2017 with .NET Framework and .NET Core SDK installed
 
 ## Updates
 
+Version 2.3 adds four new methods to IPolygon, Clone, Translate, Rotate, AddScale, and MultiplyScale. No more pesky SetRotation(GetRotation()) combos! Also fixes a slight possible bug with position setting in Box.
+
 Version 2.2.1 fixes a bug where Box's points would not update on rotation in certain situations and also renames the solution to the proper name.
 
 Version 2.2 changes the project types to multitarget .NET Framework 4.5 and .NET Standard 1.0. SeparatingAxisCollision.polygons was renamed to SeparatingAxisCollision.Primitives. Functionality remains identical to version 2.1.

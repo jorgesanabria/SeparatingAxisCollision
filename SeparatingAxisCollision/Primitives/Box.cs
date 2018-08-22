@@ -44,7 +44,7 @@ namespace SeparatingAxisCollision.Primitives {
         }
 
         public void SetPosition(Vector2D position) {
-            _position = position;
+            _position = position - GetPositionUnit() * _scale;
         }
 
         public Double GetRotation() {
@@ -52,7 +52,7 @@ namespace SeparatingAxisCollision.Primitives {
         }
 
         public void SetRotation(Double rotation) {
-            _rotation = rotation;
+            _rotation = rotation - _rotationOffset;
             _isOffsetDirty = true;
             _isPointsDirty = true;
         }
@@ -135,6 +135,28 @@ namespace SeparatingAxisCollision.Primitives {
             rect = rect.ScaledFromCenter(_scale);
             rect.Offset(_position.X, _position.Y);
             return rect;
+        }
+
+        public IPolygon Clone() {
+            return new Box(_halfWidth, _halfHeight, _rotationOffset, _offset, _position, _rotation, _scale);
+        }
+
+        public void Translate(Vector2D translation) {
+            _position += translation;
+        }
+
+        public void Rotate(Double angle) {
+            _rotation += angle;
+            _isOffsetDirty = true;
+            _isPointsDirty = true;
+        }
+
+        public void AddScale(Double amount) {
+            _scale += amount;
+        }
+
+        public void MultiplyScale(Double factor) {
+            _scale *= factor;
         }
 
         #region Private Methods

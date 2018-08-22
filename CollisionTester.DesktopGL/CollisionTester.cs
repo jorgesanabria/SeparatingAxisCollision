@@ -105,28 +105,24 @@ namespace CollisionTester.DesktopGL {
                 _polygonBeta.SetPosition(new Vector2D(mState.Position.X, mState.Position.Y));
 
             if (kState.IsKeyDown(Keys.Q))
-                _polygonAlpha.SetRotation(_polygonAlpha.GetRotation()
-                                          + (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
+                _polygonAlpha.Rotate(MathD.PIOVER2 * gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.W))
-                _polygonAlpha.SetRotation(_polygonAlpha.GetRotation()
-                                          - (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
+                _polygonAlpha.Rotate(-MathD.PIOVER2 * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.A))
-                _polygonBeta.SetRotation(_polygonBeta.GetRotation()
-                                         + (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
+                _polygonBeta.Rotate(MathD.PIOVER2 * gameTime.ElapsedGameTime.TotalSeconds);
             else if (kState.IsKeyDown(Keys.S))
-                _polygonBeta.SetRotation(_polygonBeta.GetRotation()
-                                         - (Single)(MathHelper.PiOver2 * gameTime.ElapsedGameTime.TotalSeconds));
+                _polygonBeta.Rotate(-MathD.PIOVER2 * gameTime.ElapsedGameTime.TotalSeconds);
 
             if (kState.IsKeyDown(Keys.E))
-                _polygonAlpha.SetScale(_polygonAlpha.GetScale() + (Single)gameTime.ElapsedGameTime.TotalSeconds * 100);
+                _polygonAlpha.AddScale(gameTime.ElapsedGameTime.TotalSeconds * 100);
             else if (kState.IsKeyDown(Keys.R))
-                _polygonAlpha.SetScale(_polygonAlpha.GetScale() - (Single)gameTime.ElapsedGameTime.TotalSeconds * 100);
+                _polygonAlpha.AddScale(-gameTime.ElapsedGameTime.TotalSeconds * 100);
 
             if (kState.IsKeyDown(Keys.D))
-                _polygonBeta.SetScale(_polygonBeta.GetScale() + (Single)gameTime.ElapsedGameTime.TotalSeconds * 100);
+                _polygonBeta.AddScale(gameTime.ElapsedGameTime.TotalSeconds * 100);
             else if (kState.IsKeyDown(Keys.F))
-                _polygonBeta.SetScale(_polygonBeta.GetScale() - (Single)gameTime.ElapsedGameTime.TotalSeconds * 100);
+                _polygonBeta.AddScale(-gameTime.ElapsedGameTime.TotalSeconds * 100);
 
             _broadphaseColliding = false;
             _colliding = false;

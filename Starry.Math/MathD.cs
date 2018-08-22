@@ -6,7 +6,10 @@ using System;
 
 namespace Starry.Math {
     public struct MathD {
+        public const Double PIX2 = 6.283186d;
         public const Double PI = 3.141593d;
+        public const Double PIOVER2 = 1.5707965d;
+
         public const Double INFINITY = Double.PositiveInfinity;
         public const Double NEGATIVE_INFINITY = Double.NegativeInfinity;
 

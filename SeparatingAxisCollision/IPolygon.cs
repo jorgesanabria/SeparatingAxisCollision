@@ -6,16 +6,10 @@ using Starry.Math;
 #endregion
 
 namespace SeparatingAxisCollision {
-    /* All IPolygons need:
-    *  a readonly/implicit "origin" assigned at object creation.
-    *  a get/set position of that origin
-    *  a get/set rotation
-    *  a get/set scale
-    *  projectability onto an axis
-    *  variable # of axes that need to be tested
-    *  (poly = n axes. box = 2 axes, circle = 1 axis, ray = 2 axes, point = 0 axes)
-    *  bounding boxes/squares
-    */
+    // Features needed:
+    // - IPolygon cloning without knowing base class.
+    // - Translate(Vector2D) method for easier work.
+    // - (In Collision) A way to "preview" polygons at a certain state without actually setting it to that state.
 
     public interface IPolygon {
         /// <summary>
@@ -82,5 +76,30 @@ namespace SeparatingAxisCollision {
         ///     Gets the minimum bounding box of this IPolygon.
         /// </summary>
         RectD GetBoundingBox();
+
+        /// <summary>
+        ///     Returns an exact copy of this IPolygon.
+        /// </summary>
+        IPolygon Clone();
+
+        /// <summary>
+        ///     Adds the translation to the position of this IPolygon.
+        /// </summary>
+        void Translate(Vector2D translation);
+
+        /// <summary>
+        ///     Rotates the IPolygon by the specified angle.
+        /// </summary>
+        void Rotate(Double angle);
+
+        /// <summary>
+        ///     Additively modifies the scale of this IPolygon by the specified amount.
+        /// </summary>
+        void AddScale(Double amount);
+
+        /// <summary>
+        ///     Multiplies the scale of this IPolygon by the specified factor.
+        /// </summary>
+        void MultiplyScale(Double factor);
     }
 }
